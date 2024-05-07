@@ -1,0 +1,59 @@
+* {
+    font-family: "Roboto", sans-serif;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+body{
+    padding: 0 30px;
+    width: 100%;
+    background-color: rgb(230, 230, 230);
+}
+.muestro-tipo-cambio {
+    display: flex;
+    gap: 10px;
+    font-weight: 500;
+    font-size: 1.1em;
+    padding: 10px;
+    align-items: start;
+}
+.muestro-dolar {
+    border: none;
+    font-size: 1.2em;
+    font-weight: 600;
+}
+.entrada-datos-cotizacion{
+    display: grid;
+    grid-template-columns: 100px 20% 100px 20% 100px 20%;
+    gap: 20px; 
+}
+.entrada-datos-item{
+    display: grid;
+    grid-template-columns: repeat(4, 250px) 80px;
+    justify-items: center;
+}
+.tabla-otros-costos{
+    display: grid;
+    grid-template-columns: repeat(4, 250px) 80px;
+}
+.item-grilla{
+    margin: 5px 2px;
+    border-radius: 5px;
+}
+.precio-final{
+    margin-top: 30px;
+    display: grid;
+    grid-template-columns: 200px 20% 200px;
+    font-size: 1.2em;
+    font-weight: 500;
+}
+.is-invalid{
+    border: solid 2px red;
+    border-radius: 5px;
+    background-color: rgb(255, 0, 0, 0.15);
+}
+.is-valid{
+    border: solid 2px green;
+    border-radius: 5px;
+    background-color: rgb(0, 128, 0, 0.15);
+}
