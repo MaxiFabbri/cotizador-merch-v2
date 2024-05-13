@@ -15,11 +15,17 @@ const tablaOtrosCostos = document.getElementById('tablaOtrosCostos');
 
 // cargo una cotización vacía
 cargarCotizaciones = () => {
-  const cotizacion = new Cotizacion(hoy, cambioDolar.cambio, "", 0,"" )
-  cotizaciones.push(cotizacion)
+  const cotizacion = new Cotizacion(hoy, cambioDolar.cambio, "", 0,"" );
+  cotizaciones.push(cotizacion);
 }
 cargarCotizaciones ()
-
+// cargo un Item Vacío
+cargarItem = () => {
+  const item = new Item(cotizaciones.length, 0, 0, "", "");
+  items.push(item);
+  console.log(items)
+}
+cargarItem();
 
 // Muestro el valor del Dolar Vigente y la Fecha, y permito que lo modifiquen para la cotización
 muestroDolar.value = cambioDolar.cambio.toFixed(2);
@@ -37,9 +43,10 @@ muestroDolar.onchange = () => {
 }
 document.getElementById("fechaCambio").innerText = cambioDolar.fecha;
 
-// Agrego una fila con Items, cuando aprietan el Boton Sumar Intem  ++y los Borro cuando apretan eliminar++ ESTO FALTA
+// Agrego una fila con Items, cuando aprietan el Boton Sumar Intem 
 sumarItem.onclick = () => {
     agregarItem();
+    cargarItem();
 }
 sumarOtroCosto.onclick = () => {
     agregarOtros();
@@ -99,11 +106,25 @@ inputProv.addEventListener('input', function() {
     }
 });
 
-
+tablaItems.addEventListener('click', (event) => {
+  if (event.target.classList.contains('eliminar-item')) {
+    const fila = event.target.parentNode.parentNode;
+    fila.remove();
+  }
+});
+tablaItems.addEventListener('change', (event) => {
+  if (event.target.classList.contains('item-grilla')) {
+    const inputCambiado = event.target;
+    const fila = event.target.parentNode.parentNode;
+    const indiceFila = parseInt(inputCambiado.parentNode.parentNode.dataset.fila, 10);
+    console.log("CAMBIO", event.target.id, "Fila:", indiceFila, "Valor actual:", inputCambiado.value)
+  }
+});
 function agregarItem() {
     let fila = document.createElement("tr")
-    fila.classList.add("entrada-datos-item");
     numeroFilaItem++;
+    fila.dataset.fila = numeroFilaItem;
+    fila.classList.add("entrada-datos-item");
     fila.innerHTML = `<td>
                         <input class="item-grilla" type="number" name="costo-unitario" value="0" id="inCostoUnitario">
                       </td>
@@ -122,19 +143,13 @@ function agregarItem() {
                       </td>`;
     tablaItems.appendChild(fila)
 }
-// function eliminarItem () {
-//   let removebutton = document.querySelectorAll(".eliminar-item")
-//     removebutton.forEach (button => {
-//         button.onclick = (e) => {
-//             const itemId = e.currentTarget.id
-//             console.log(itemId)
 
-            
-//         }
-//     })
-// }
-// eliminarItem ();
-
+tablaOtrosCostos.addEventListener('click', (event) => {
+  if (event.target.classList.contains('eliminar-item')) {
+    const fila = event.target.parentNode.parentNode;
+    fila.remove();
+  }
+});
 function agregarOtros() {
     let fila = document.createElement("tr")
     fila.classList.add("entrada-datos-item");
@@ -143,27 +158,26 @@ function agregarOtros() {
                         <label for="inProducto">Detalle:</label>
                       </td>
                       <td>
-                        <input class="item-grilla" type="text" name="Detalle" value="Detalle" id="inDetalle${numeroFilaOtros}">  
+                        <input class="item-grilla" type="text" name="Detalle" value="Detalle" id="inDetalle">  
                       </td>
                       <td>
                         <label for="inOtrosCostos">Otros Costos:</label> 
                       </td>
                       <td>
-                        <input class="item-grilla" type="number" name="otros-costos" value="0" id="inOtrosCostos${numeroFilaOtros}">
+                        <input class="item-grilla" type="number" name="otros-costos" value="0" id="inOtrosCostos">
                       </td>
                       <td>
-                        <button id="eliminarOtro${numeroFilaOtros}">Eliminar</button>
+                        <button class="eliminar-item" id="eliminarOtro">Eliminar</button>
                       </td>`;
     tablaOtrosCostos.appendChild(fila)
 }
 
-// controlo modificación de datos y los valido antes de modificarlos en el array
+// controlo modificación de datos y los valido antes de modificarlos en el array en el encabezado
 inputCantidad.onchange = () => {
   if (inputCantidad.value > 0) {
     inputCantidad.classList.remove("is-invalid");
     inputCantidad.classList.add("is-valid");
     cotizaciones[cotizaciones.length -1].updateCantidad(inputCantidad.value);
-    console.log(cotizaciones);
   } else {
     console.log("Importe no valido")
     inputCantidad.classList.remove("is-valid");
@@ -175,9 +189,8 @@ inputDescripcion.onchange = () => {
     inputDescripcion.classList.remove("is-invalid");
     inputDescripcion.classList.add("is-valid");
     cotizaciones[cotizaciones.length -1].updateDescripcion(inputDescripcion.value);
-    console.log(cotizaciones);
   } else {
-    console.log("Importe no valido")
+    console.log("Este Campo es obligatorio")
     inputDescripcion.classList.remove("is-valid");
     inputDescripcion.classList.add("is-invalid");
   }
